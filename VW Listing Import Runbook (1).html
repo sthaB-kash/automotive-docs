@@ -1,0 +1,568 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>VW Listing Import Runbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+.CodeMirror{font-family:monospace;height:300px;color:#000;direction:ltr}.CodeMirror-lines{padding:4px 0}.CodeMirror pre.CodeMirror-line,.CodeMirror pre.CodeMirror-line-like{padding:0 4px}.CodeMirror-gutter-filler,.CodeMirror-scrollbar-filler{background-color:#fff}.CodeMirror-gutters{border-right:1px solid #ddd;background-color:#f7f7f7;white-space:nowrap}.CodeMirror-linenumber{padding:0 3px 0 5px;min-width:20px;text-align:right;color:#999;white-space:nowrap}.CodeMirror-guttermarker{color:#000}.CodeMirror-guttermarker-subtle{color:#999}.CodeMirror-cursor{border-left:1px solid #000;border-right:none;width:0}.CodeMirror div.CodeMirror-secondarycursor{border-left:1px solid silver}.cm-fat-cursor .CodeMirror-cursor{width:auto;border:0!important;background:#7e7}.cm-fat-cursor div.CodeMirror-cursors{z-index:1}.cm-fat-cursor .CodeMirror-line::selection,.cm-fat-cursor .CodeMirror-line>span::selection,.cm-fat-cursor .CodeMirror-line>span>span::selection{background:0 0}.cm-fat-cursor .CodeMirror-line::-moz-selection,.cm-fat-cursor .CodeMirror-line>span::-moz-selection,.cm-fat-cursor .CodeMirror-line>span>span::-moz-selection{background:0 0}.cm-fat-cursor{caret-color:transparent}@-moz-keyframes blink{50%{background-color:transparent}}@-webkit-keyframes blink{50%{background-color:transparent}}@keyframes blink{50%{background-color:transparent}}.cm-tab{display:inline-block;text-decoration:inherit}.CodeMirror-rulers{position:absolute;left:0;right:0;top:-50px;bottom:0;overflow:hidden}.CodeMirror-ruler{border-left:1px solid #ccc;top:0;bottom:0;position:absolute}.cm-s-default .cm-header{color:#00f}.cm-s-default .cm-quote{color:#090}.cm-negative{color:#d44}.cm-positive{color:#292}.cm-header,.cm-strong{font-weight:700}.cm-em{font-style:italic}.cm-link{text-decoration:underline}.cm-strikethrough{text-decoration:line-through}.cm-s-default .cm-keyword{color:#708}.cm-s-default .cm-atom{color:#219}.cm-s-default .cm-number{color:#164}.cm-s-default .cm-def{color:#00f}.cm-s-default .cm-variable-2{color:#05a}.cm-s-default .cm-type,.cm-s-default .cm-variable-3{color:#085}.cm-s-default .cm-comment{color:#a50}.cm-s-default .cm-string{color:#a11}.cm-s-default .cm-string-2{color:#f50}.cm-s-default .cm-meta{color:#555}.cm-s-default .cm-qualifier{color:#555}.cm-s-default .cm-builtin{color:#30a}.cm-s-default .cm-bracket{color:#997}.cm-s-default .cm-tag{color:#170}.cm-s-default .cm-attribute{color:#00c}.cm-s-default .cm-hr{color:#999}.cm-s-default .cm-link{color:#00c}.cm-s-default .cm-error{color:red}.cm-invalidchar{color:red}.CodeMirror-composing{border-bottom:2px solid}div.CodeMirror span.CodeMirror-matchingbracket{color:#0b0}div.CodeMirror span.CodeMirror-nonmatchingbracket{color:#a22}.CodeMirror-matchingtag{background:rgba(255,150,0,.3)}.CodeMirror-activeline-background{background:#e8f2ff}.CodeMirror{position:relative;overflow:hidden;background:#fff}.CodeMirror-scroll{overflow:scroll!important;margin-bottom:-50px;margin-right:-50px;padding-bottom:50px;height:100%;outline:0;position:relative;z-index:0}.CodeMirror-sizer{position:relative;border-right:50px solid transparent}.CodeMirror-gutter-filler,.CodeMirror-hscrollbar,.CodeMirror-scrollbar-filler,.CodeMirror-vscrollbar{position:absolute;z-index:6;display:none;outline:0}.CodeMirror-vscrollbar{right:0;top:0;overflow-x:hidden;overflow-y:scroll}.CodeMirror-hscrollbar{bottom:0;left:0;overflow-y:hidden;overflow-x:scroll}.CodeMirror-scrollbar-filler{right:0;bottom:0}.CodeMirror-gutter-filler{left:0;bottom:0}.CodeMirror-gutters{position:absolute;left:0;top:0;min-height:100%;z-index:3}.CodeMirror-gutter{white-space:normal;height:100%;display:inline-block;vertical-align:top;margin-bottom:-50px}.CodeMirror-gutter-wrapper{position:absolute;z-index:4;background:0 0!important;border:none!important}.CodeMirror-gutter-background{position:absolute;top:0;bottom:0;z-index:4}.CodeMirror-gutter-elt{position:absolute;cursor:default;z-index:4}.CodeMirror-gutter-wrapper ::selection{background-color:transparent}.CodeMirror-gutter-wrapper ::-moz-selection{background-color:transparent}.CodeMirror-lines{cursor:text;min-height:1px}.CodeMirror pre.CodeMirror-line,.CodeMirror pre.CodeMirror-line-like{-moz-border-radius:0;-webkit-border-radius:0;border-radius:0;border-width:0;background:0 0;font-family:inherit;font-size:inherit;margin:0;white-space:pre;word-wrap:normal;line-height:inherit;color:inherit;z-index:2;position:relative;overflow:visible;-webkit-tap-highlight-color:transparent;-webkit-font-variant-ligatures:contextual;font-variant-ligatures:contextual}.CodeMirror-wrap pre.CodeMirror-line,.CodeMirror-wrap pre.CodeMirror-line-like{word-wrap:break-word;white-space:pre-wrap;word-break:normal}.CodeMirror-linebackground{position:absolute;left:0;right:0;top:0;bottom:0;z-index:0}.CodeMirror-linewidget{position:relative;z-index:2;padding:.1px}.CodeMirror-rtl pre{direction:rtl}.CodeMirror-code{outline:0}.CodeMirror-gutter,.CodeMirror-gutters,.CodeMirror-linenumber,.CodeMirror-scroll,.CodeMirror-sizer{-moz-box-sizing:content-box;box-sizing:content-box}.CodeMirror-measure{position:absolute;width:100%;height:0;overflow:hidden;visibility:hidden}.CodeMirror-cursor{position:absolute;pointer-events:none}.CodeMirror-measure pre{position:static}div.CodeMirror-cursors{visibility:hidden;position:relative;z-index:3}div.CodeMirror-dragcursors{visibility:visible}.CodeMirror-focused div.CodeMirror-cursors{visibility:visible}.CodeMirror-selected{background:#d9d9d9}.CodeMirror-focused .CodeMirror-selected{background:#d7d4f0}.CodeMirror-crosshair{cursor:crosshair}.CodeMirror-line::selection,.CodeMirror-line>span::selection,.CodeMirror-line>span>span::selection{background:#d7d4f0}.CodeMirror-line::-moz-selection,.CodeMirror-line>span::-moz-selection,.CodeMirror-line>span>span::-moz-selection{background:#d7d4f0}.cm-searching{background-color:#ffa;background-color:rgba(255,255,0,.4)}.cm-force-border{padding-right:.1px}@media print{.CodeMirror div.CodeMirror-cursors{visibility:hidden}}.cm-tab-wrap-hack:after{content:''}span.CodeMirror-selectedtext{background:0 0}.CodeMirror-foldmarker{color:#00f;text-shadow:#b9f 1px 1px 2px,#b9f -1px -1px 2px,#b9f 1px -1px 2px,#b9f -1px 1px 2px;font-family:arial;line-height:.3;cursor:pointer}.CodeMirror-foldgutter{width:.7em}.CodeMirror-foldgutter-folded,.CodeMirror-foldgutter-open{cursor:pointer}.CodeMirror-foldgutter-open:after{content:"\25BE"}.CodeMirror-foldgutter-folded:after{content:"\25B8"}
+</style>
+<style>
+/* Layout: sticky table of contents on the left, runbook then code cards on the right; one column on phones */
+:root {
+  --bg: #f4f6f8; --surface: #ffffff; --ink: #17212b; --muted: #586474; --line: #dbe1e7;
+  --accent: #0b5cab; --accent-soft: #e6eff9; --warn: #8a5a00; --warn-soft: #fdf3dc;
+  --code-bg: #fbfcfd; --gutter: #f1f4f7; --sel: #d6e6f8;
+  --t-kw: #a3197a; --t-str: #1d7a3a; --t-num: #9a4b00; --t-com: #7a8696; --t-def: #0b5cab; --t-sym: #6a3fb5; --t-var: #17212b; --t-const: #b0400b;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1318; --surface: #141b22; --ink: #e2e8ee; --muted: #93a0ae; --line: #25303b;
+  --accent: #6aa9ee; --accent-soft: #16273a; --warn: #f0c060; --warn-soft: #2a2312;
+  --code-bg: #10161c; --gutter: #131a21; --sel: #1f3550;
+  --t-kw: #e48ad0; --t-str: #8fd19e; --t-num: #f0b072; --t-com: #6f7d8c; --t-def: #7fb8f5; --t-sym: #b9a2f2; --t-var: #e2e8ee; --t-const: #f29a6c;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0e1318; --surface: #141b22; --ink: #e2e8ee; --muted: #93a0ae; --line: #25303b;
+  --accent: #6aa9ee; --accent-soft: #16273a; --warn: #f0c060; --warn-soft: #2a2312;
+  --code-bg: #10161c; --gutter: #131a21; --sel: #1f3550;
+  --t-kw: #e48ad0; --t-str: #8fd19e; --t-num: #f0b072; --t-com: #6f7d8c; --t-def: #7fb8f5; --t-sym: #b9a2f2; --t-var: #e2e8ee; --t-const: #f29a6c;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--ink); font: 15px/1.6 var(--font-body); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-block: 40px 80px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 48px; }
+@media (max-width: 860px) { .wrap { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-block: 24px 60px; } .toc { position: static !important; } }
+.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 24px); align-self: start; font-size: 13.5px; }
+.toc p { margin: 0 0 8px; font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.toc ol { list-style: none; margin: 0 0 20px; padding: 0; display: grid; gap: 2px; }
+.toc a { color: var(--ink); text-decoration: none; display: block; padding: 3px 8px; border-radius: 4px; overflow-wrap: anywhere; }
+.toc a:hover { background: var(--accent-soft); color: var(--accent); }
+.toc code { font-size: 12px; }
+main { min-width: 0; display: grid; gap: 56px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; line-height: 1.25; }
+h1 { font-size: 32px; font-weight: 700; letter-spacing: -.01em; }
+h2 { font-size: 22px; font-weight: 600; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+h3 { font-size: 16px; font-weight: 600; }
+p { margin: 0; max-width: 72ch; }
+a { color: var(--accent); }
+code { font-family: var(--font-mono); font-size: .9em; }
+:not(pre) > code { background: var(--accent-soft); padding: 1px 5px; border-radius: 3px; overflow-wrap: anywhere; }
+section.block { display: grid; gap: 18px; scroll-margin-top: 16px; }
+.lede { display: grid; gap: 14px; }
+.eyebrow { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+.lede p { font-size: 16.5px; color: var(--muted); }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 13px; color: var(--muted); }
+.facts b { color: var(--ink); font-weight: 500; font-family: var(--font-mono); font-size: 12.5px; }
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; }
+.flow span.node { border: 1px solid var(--line); background: var(--surface); padding: 6px 10px; border-radius: 4px; font-family: var(--font-mono); font-size: 12px; }
+.flow span.arrow { color: var(--muted); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+th { font-size: 11.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); font-weight: 600; background: var(--gutter); }
+td.num { font-variant-numeric: tabular-nums; text-align: right; color: var(--muted); }
+td code { white-space: nowrap; }
+.steps { list-style: none; counter-reset: step; margin: 0; padding: 0; display: grid; gap: 28px; }
+.steps > li { counter-increment: step; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 14px; }
+.steps > li::before { content: counter(step); width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent);
+  display: grid; place-items: center; font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums; }
+.step-body { min-width: 0; display: grid; gap: 10px; }
+.step-body ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; max-width: 72ch; }
+.cmd { position: relative; background: var(--code-bg); border: 1px solid var(--line); border-radius: 6px; }
+.cmd pre { margin: 0; padding: 12px 14px; padding-right: 72px; overflow-x: auto; font: 13px/1.55 var(--font-mono); white-space: pre; }
+.cmd pre .c { color: var(--t-com); }
+.cmd button { position: absolute; top: 8px; right: 8px; }
+.note { border-left: 3px solid var(--warn); background: var(--warn-soft); padding: 10px 14px; border-radius: 0 6px 6px 0; font-size: 14px; max-width: 80ch; }
+.note b { color: var(--warn); }
+.opt { display: grid; gap: 10px; border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; background: var(--surface); }
+.opt-tag { font-size: 11.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+button { font: 500 12.5px var(--font-body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 5px 10px; cursor: pointer; }
+button:hover { border-color: var(--accent); color: var(--accent); }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.files { display: grid; gap: 28px; }
+.file { border: 1px solid var(--line); border-radius: 8px; background: var(--surface); overflow: hidden; scroll-margin-top: 16px; }
+.file-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+.file-meta { min-width: 0; display: grid; gap: 4px; flex: 1 1 360px; }
+.file-meta h3 code { font-size: 14px; overflow-wrap: anywhere; }
+.file-meta p { font-size: 13.5px; color: var(--muted); }
+.file-role { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+.file-actions { display: flex; gap: 6px; align-items: flex-start; flex-wrap: wrap; }
+.hint { font-size: 13.5px; color: var(--muted); }
+
+/* CodeMirror, themed from the page tokens */
+.CodeMirror { height: auto; font: 13px/1.55 var(--font-mono); background: var(--code-bg); color: var(--t-var); }
+.CodeMirror-scroll { max-height: 70vh; min-height: 40px; }
+.CodeMirror-gutters { background: var(--gutter); border-right: 1px solid var(--line); }
+.CodeMirror-linenumber { color: var(--muted); font-variant-numeric: tabular-nums; padding: 0 6px 0 4px; }
+.CodeMirror-cursor { border-left-color: var(--ink); }
+.CodeMirror-selected, .CodeMirror-focused .CodeMirror-selected { background: var(--sel) !important; }
+.CodeMirror-foldgutter { width: 14px; }
+.CodeMirror-foldgutter-open, .CodeMirror-foldgutter-folded { color: var(--muted); cursor: pointer; font-size: 11px; }
+.CodeMirror-foldgutter-open:after { content: "\25BE"; }
+.CodeMirror-foldgutter-folded:after { content: "\25B8"; color: var(--accent); }
+.CodeMirror-foldmarker { color: var(--accent); background: var(--accent-soft); text-shadow: none; font-family: var(--font-mono); border-radius: 3px; padding: 0 4px; line-height: 1.1; cursor: pointer; }
+.cm-s-vw .cm-keyword { color: var(--t-kw); }
+.cm-s-vw .cm-string, .cm-s-vw .cm-string-2 { color: var(--t-str); }
+.cm-s-vw .cm-number { color: var(--t-num); }
+.cm-s-vw .cm-comment { color: var(--t-com); font-style: italic; }
+.cm-s-vw .cm-def { color: var(--t-def); }
+.cm-s-vw .cm-atom { color: var(--t-sym); }
+.cm-s-vw .cm-variable-2, .cm-s-vw .cm-variable-3 { color: var(--t-def); }
+.cm-s-vw .cm-tag { color: var(--t-const); }
+.cm-s-vw .cm-property, .cm-s-vw .cm-variable, .cm-s-vw .cm-operator { color: var(--t-var); }
+.cm-s-vw .cm-builtin { color: var(--t-const); }
+.cm-s-vw .cm-meta { color: var(--t-kw); }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+</style>
+
+<div class="wrap">
+  <nav class="toc" aria-label="Contents">
+    <p>Runbook</p>
+    <ol>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#files">Files involved</a></li>
+      <li><a href="#prod">Run on production</a></li>
+      <li><a href="#options">Task options</a></li>
+      <li><a href="#logs">Logs and output</a></li>
+      <li><a href="#trouble">Troubleshooting</a></li>
+      <li><a href="#undo">Undo an import</a></li>
+    </ol>
+    <p>Code</p>
+    <ol id="toc-files"></ol>
+  </nav>
+
+  <main>
+    <section class="block lede" id="overview">
+      <span class="eyebrow">Vietwheels · rake listings:vw_csv_import</span>
+      <h1>VW listing import runbook</h1>
+      <p>Imports Chotot car listings from <code>vw-data.xlsx</code> (or a UTF-8 <code>.csv</code>) into Vietwheels. The code lives only on this page and is not committed to the repo. Copy the files to the server, restart Sidekiq, run the task in the background and check the logs.</p>
+      <div class="facts">
+        <span>Server <b>dev@13.236.189.248</b></span>
+        <span>App <b>/home/dev/www/africar/vietwheels</b></span>
+        <span>Queues <b>listing_import</b>, <b>images</b></span>
+        <span>Saved <b>28 Oct 2026</b>, branch <b>feat/vw-new-design</b></span>
+      </div>
+      <div class="flow" aria-label="Import flow">
+        <span class="node">vw-data.xlsx</span><span class="arrow">→</span>
+        <span class="node">rake vw_csv_import</span><span class="arrow">→</span>
+        <span class="node">VwRow validate</span><span class="arrow">→</span>
+        <span class="node">VwListingImportWorker</span><span class="arrow">→</span>
+        <span class="node">ListingImageWorker</span>
+      </div>
+      <p class="hint">Bad rows never reach Sidekiq. They go to <code>vw-data_invalid.csv</code>. Each listing's <code>source</code> is <code>vw_chotot_&lt;chotot ad id&gt;</code>, so running the import again skips rows that are already in the database.</p>
+    </section>
+
+    <section class="block" id="files">
+      <h2>Files involved</h2>
+      <p>Put each file back at the same path in the app. The full code is at the bottom of the page. Click the arrows in the gutter to fold a block, or use <b>Fold all</b> to collapse every method at once.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Path</th><th>Role</th><th style="text-align:right">Lines</th></tr></thead>
+        <tbody><tr><td><a href="#f-lib-tasks-batch_upload-rake"><code>lib/tasks/batch_upload.rake</code></a></td><td>Rake task</td><td class="num">123</td></tr>
+<tr><td><a href="#f-app-services-listing_import-vw_row-rb"><code>app/services/listing_import/vw_row.rb</code></a></td><td>Row validator</td><td class="num">151</td></tr>
+<tr><td><a href="#f-app-services-listing_import-xlsx_reader-rb"><code>app/services/listing_import/xlsx_reader.rb</code></a></td><td>XLSX reader</td><td class="num">159</td></tr>
+<tr><td><a href="#f-app-workers-vw_listing_import_worker-rb"><code>app/workers/vw_listing_import_worker.rb</code></a></td><td>Import worker</td><td class="num">287</td></tr>
+<tr><td><a href="#f-app-workers-listing_image_worker-rb"><code>app/workers/listing_image_worker.rb</code></a></td><td>Image worker</td><td class="num">57</td></tr>
+<tr><td><a href="#f-db-migrate-20261016090000_add_index_to_listings_source-rb"><code>db/migrate/20261016090000_add_index_to_listings_source.rb</code></a></td><td>Migration</td><td class="num">9</td></tr>
+<tr><td><a href="#f-config-deploy-rb"><code>config/deploy.rb</code></a></td><td>Deploy change (excerpt)</td><td class="num">13</td></tr>
+<tr><td><a href="#f-scripts-update_brands_and_models-rb"><code>scripts/update_brands_and_models.rb</code></a></td><td>Catalogue prep (optional)</td><td class="num">190</td></tr></tbody>
+      </table></div>
+      <p class="hint">The import also relies on code that is already in the app: <code>VehicleListing</code>, <code>Picture</code>, <code>PhoneNumber</code>, <code>Brand</code>/<code>Model</code>/<code>City</code>/<code>Region</code> and <code>Fuel</code> with English translations named Petrol, Diesel, Hybrid, Electric and Other.</p>
+    </section>
+
+    <section class="block" id="prod">
+      <h2>Run on production</h2>
+      <p>This is the procedure used on production: copy the files over, restart Sidekiq with mina, run the rake task in the background and follow the logs.</p>
+      <div class="opt">
+        <span class="opt-tag">Before the first import only</span>
+        <p>The <code>listings.source</code> index must exist. Check it once, and run <code>db:migrate</code> if it prints <code>false</code>. Optionally, add missing brands and models with <code>scripts/update_brands_and_models.rb</code> first. It does a dry run by default.</p>
+        <div class="cmd"><pre>cd /home/dev/www/africar/vietwheels/current
+RAILS_ENV=production bundle exec rails runner 'p ActiveRecord::Base.connection.index_exists?(:listings, :source)'
+RAILS_ENV=production bundle exec rake db:migrate
+
+RAILS_ENV=production bundle exec rails console
+load Rails.root.join('scripts/update_brands_and_models.rb').to_s
+UpdateBrandsAndModels.call                   <span class="c"># dry run, read the report</span>
+UpdateBrandsAndModels.call(dry_run: false)   <span class="c"># apply</span></pre><button type="button" class="copy-cmd">Copy</button></div>
+      </div>
+      <ol class="steps">
+        <li><div class="step-body">
+          <h3>Copy the required files</h3>
+          <p>Save the files from the Code section into your local checkout at the same paths, then copy them and the data file to the server from the project root. The code goes into <code>current/</code>, where the next <code>mina deploy</code> removes it. That's fine, because the code isn't committed. The data file goes into <code>shared/</code>.</p>
+          <div class="cmd"><pre>rsync -avR \
+  lib/tasks/batch_upload.rake \
+  app/services/listing_import/vw_row.rb \
+  app/services/listing_import/xlsx_reader.rb \
+  app/workers/vw_listing_import_worker.rb \
+  app/workers/listing_image_worker.rb \
+  db/migrate/20261016090000_add_index_to_listings_source.rb \
+  dev@13.236.189.248:/home/dev/www/africar/vietwheels/current/
+
+scp vw-data.xlsx dev@13.236.189.248:/home/dev/www/africar/vietwheels/shared/</pre><button type="button" class="copy-cmd">Copy</button></div>
+          <ul>
+            <li><code>.xlsx</code> is the safest format. A <code>.csv</code> must be UTF-8. If Excel saved it as Windows-1252, the task stops, because the Vietnamese characters are already lost.</li>
+            <li>Columns it reads: <code>title, body, make, model, year, mileage, number_of_seats, price, area, region, post_by, fuel_type, gearbox, url, phone_number, image1_url, image2_url, image3_url, image3_url_1</code>.</li>
+          </ul>
+        </div></li>
+
+        <li><div class="step-body">
+          <h3>Restart Sidekiq</h3>
+          <p>Run this from your machine. The restart loads the new worker classes. <code>sidekiq:start</code> uses the flags in your local <code>config/deploy.rb</code>, so that file must include <code>-q images -q listing_import</code>. Without those flags the import jobs never run. The excerpt is in the Code section.</p>
+          <div class="cmd"><pre>mina sidekiq:stop && mina sidekiq:start
+
+<span class="c"># check on the server: the command line should list both queues</span>
+ssh dev@13.236.189.248 'ps aux | grep [s]idekiq'</pre><button type="button" class="copy-cmd">Copy</button></div>
+          <p class="note"><b>Monit or systemd.</b> If Monit or a systemd unit (<code>sidekiq-vietwheels.service</code>) also restarts Sidekiq, add the two queues to that config too. Otherwise an automatic restart drops them.</p>
+        </div></li>
+
+        <li><div class="step-body">
+          <h3>Run the rake task in the background</h3>
+          <p><code>nohup</code> keeps the task running after you log out. Its terminal output goes to <code>log/vw_csv_import_rake.log</code>.</p>
+          <div class="cmd"><pre>ssh dev@13.236.189.248
+cd /home/dev/www/africar/vietwheels/current
+
+RAILS_ENV=production FILE=/home/dev/www/africar/vietwheels/shared/vw-data.xlsx \
+  nohup bundle exec rake listings:vw_csv_import > log/vw_csv_import_rake.log 2>&1 &
+
+<span class="c"># is it still running?</span>
+ps aux | grep [v]w_csv_import</pre><button type="button" class="copy-cmd">Copy</button></div>
+          <p>To check the file first without enqueuing anything, run the same command with <code>DRY_RUN=1</code> in front, then read the summary and <code>shared/vw-data_invalid.csv</code>.</p>
+          <p>The task waits whenever <code>listing_import</code> has 20 or more jobs, so lines like <code>Queue size 20 &gt;= 20, waiting 10s...</code> are normal. It finishes once every batch is enqueued. The workers keep running after that.</p>
+        </div></li>
+
+        <li><div class="step-body">
+          <h3>Check the logs</h3>
+          <div class="cmd"><pre>cd /home/dev/www/africar/vietwheels/current
+tail -f log/vw_csv_import_rake.log   <span class="c"># rake output: summary, queue waits, "Enqueued N batches"</span>
+tail -f log/vw_import.log            <span class="c"># worker: Imported x/y, skipped rows</span>
+tail -f 0carpla_image-upload-err.log <span class="c"># failed image downloads</span>
+
+<span class="c"># queue sizes, retries and dead jobs</span>
+RAILS_ENV=production bundle exec rails runner '
+  %w[listing_import images].each { |q| puts "#{q}: #{Sidekiq::Queue.new(q).size}" }
+  puts "retries: #{Sidekiq::RetrySet.new.size} | dead: #{Sidekiq::DeadSet.new.size}"
+  puts "imported: #{VehicleListing.where("source LIKE ?", "vw_chotot%").count}"'</pre><button type="button" class="copy-cmd">Copy</button></div>
+          <p>Images download 30 to 120 seconds after each batch, so photos show up on listings a little later than the listings themselves.</p>
+        </div></li>
+
+        <li><div class="step-body">
+          <h3>Finish up</h3>
+          <p>The worker bulk-inserts listings and skips model callbacks. If the multi-fuel <code>listing_fuels</code> table is on production, fill it in for the new listings. Otherwise they don't show up when someone filters by fuel. The insert is safe to run more than once.</p>
+          <div class="cmd"><pre>RAILS_ENV=production bundle exec rails runner '
+  if ActiveRecord::Base.connection.table_exists?(:listing_fuels)
+    n = ActiveRecord::Base.connection.exec_update(<<~SQL)
+    INSERT INTO listing_fuels (listing_id, fuel_id, created_at, updated_at)
+    SELECT l.id, l.fuel_id, NOW(), NOW() FROM listings l
+    WHERE l.source LIKE $$vw_chotot%$$ AND l.fuel_id IS NOT NULL
+      AND NOT EXISTS (SELECT 1 FROM listing_fuels lf WHERE lf.listing_id = l.id AND lf.fuel_id = l.fuel_id)
+  SQL
+    puts "listing_fuels added: #{n}"
+  else
+    puts "no listing_fuels table, nothing to do"
+  end'
+
+<span class="c"># refresh home page counts and filters</span>
+RAILS_ENV=production bundle exec rails runner "Rails.cache.clear"</pre><button type="button" class="copy-cmd">Copy</button></div>
+          <p>If you used Option A, the copied files go away on the next deploy. Nothing else needs cleaning up.</p>
+        </div></li>
+      </ol>
+    </section>
+
+    <section class="block" id="options">
+      <h2>Task options</h2>
+      <p>Set these as environment variables in front of the <code>rake</code> command.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Variable</th><th>Default</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td><code>FILE</code> (or <code>CSV</code>)</td><td><code>vw-data.xlsx</code></td><td>Input file. Relative paths start from the app root. An absolute path is used as given.</td></tr>
+          <tr><td><code>DRY_RUN</code></td><td>off</td><td>Validate and write the rejects file only. Nothing is enqueued.</td></tr>
+          <tr><td><code>BATCH_SIZE</code></td><td><code>100</code></td><td>Rows per <code>VwListingImportWorker</code> job.</td></tr>
+          <tr><td><code>MAX_QUEUE</code></td><td><code>20</code></td><td>Pause enqueuing while <code>listing_import</code> holds this many jobs.</td></tr>
+          <tr><td><code>ALLOW_LOSSY_ENCODING</code></td><td>off</td><td>Import a Windows-1252 CSV anyway. The Vietnamese text comes out as <code>?</code>. Avoid it.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="block" id="logs">
+      <h2>Logs and output</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>File on the server</th><th>Written by</th><th>Contents</th></tr></thead>
+        <tbody>
+          <tr><td><code>shared/vw-data_invalid.csv</code></td><td>rake task</td><td>Rejected rows with row number and reasons (missing_title, invalid_phone_no, no_images, duplicate_of_row_N and so on). Overwritten on every run, dry runs included.</td></tr>
+          <tr><td><code>current/log/vw_import.log</code></td><td>VwListingImportWorker</td><td>Per batch: <code>Imported x/y | rows a..b</code>, <code>Skipped N already imported</code>, rows skipped for a missing city or model, and failed inserts. Appended. <code>log/</code> is shared, so it survives deploys.</td></tr>
+          <tr><td><code>current/0carpla_image-upload-err.log</code></td><td>ListingImageWorker</td><td>Failed image downloads with listing id and URL. Appended. The Carpla import writes here too. It sits in the release folder, not <code>shared/</code>, so copy it out before the next deploy if you need it.</td></tr>
+          <tr><td><code>current/log/sidekiq.log</code></td><td>Sidekiq</td><td>Job start and finish, exceptions, and jobs that gave up after 3 retries.</td></tr>
+          <tr><td><code>current/log/vw_csv_import_rake.log</code></td><td>rake task (nohup)</td><td>Row, valid and invalid counts, the reason breakdown and the number of batches enqueued.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="block" id="trouble">
+      <h2>Troubleshooting</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Symptom</th><th>Cause and fix</th></tr></thead>
+        <tbody>
+          <tr><td>Task stops with <code>is not UTF-8</code></td><td>Excel saved the CSV as Windows-1252. Use the <code>.xlsx</code> or export the CSV again as UTF-8.</td></tr>
+          <tr><td>Queue keeps growing, <code>vw_import.log</code> stays quiet</td><td>Sidekiq isn't listening on <code>listing_import</code>, or it wasn't restarted after the files were copied. Go back to step 2.</td></tr>
+          <tr><td><code>Row N skipped — no city_id</code></td><td>The region couldn't be created. On dev the error was <code>Name bn can't be blank</code> because Region needs every translated name. Create the region by hand, then run the import again.</td></tr>
+          <tr><td>Region or title shows <code>?</code> in place of Vietnamese letters</td><td>The file was imported with the wrong encoding. Remove those listings (see Undo), fix the file and run again.</td></tr>
+          <tr><td>Listings with no photos</td><td>Check <code>0carpla_image-upload-err.log</code>. Chotot image URLs expire, so re-export the data if most of them fail.</td></tr>
+          <tr><td><code>Skipped N already imported</code></td><td>Expected on a second run. Rows are matched on <code>source</code>.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="block" id="undo">
+      <h2>Undo an import</h2>
+      <p class="note"><b>This can't be undone.</b> Back up the database first (<code>mina backup</code>). This deletes every listing imported from Chotot, including its pictures and phone numbers. Seller users created by the import are kept.</p>
+      <div class="cmd"><pre>RAILS_ENV=production bundle exec rails runner '
+  scope = VehicleListing.where("source LIKE ?", "vw_chotot%")
+  puts "deleting #{scope.count}"
+  scope.find_each(&:destroy)'</pre><button type="button" class="copy-cmd">Copy</button></div>
+    </section>
+
+    <section class="block" id="code">
+      <h2>Code</h2>
+      <p class="hint">Click ▾ in the gutter to fold a block. Folded blocks show <code>↔</code>; click it to open them again. Copy places the whole file on the clipboard.</p>
+      <div class="files">
+<section class="file" id="f-lib-tasks-batch_upload-rake">
+  <header class="file-head">
+    <div class="file-meta">
+      <span class="file-role">Rake task</span>
+      <h3><code>lib/tasks/batch_upload.rake</code></h3>
+      <p>Only the <code>vw_csv_import</code> task and its helpers. Reads the file, validates every row, writes rejects to <code>&lt;file&gt;_invalid.csv</code> and enqueues valid rows in batches.</p>
+    </div>
+    <div class="file-actions">
+      <button type="button" data-act="fold" data-id="f-lib-tasks-batch_upload-rake">Fold all</button>
+      <button type="button" data-act="unfold" data-id="f-lib-tasks-batch_upload-rake">Unfold all</button>
+      <button type="button" data-act="copy" data-id="f-lib-tasks-batch_upload-rake">Copy</button>
+    </div>
+  </header>
+  <div class="editor" data-id="f-lib-tasks-batch_upload-rake"></div>
+</section>
+
+<section class="file" id="f-app-services-listing_import-vw_row-rb">
+  <header class="file-head">
+    <div class="file-meta">
+      <span class="file-role">Row validator</span>
+      <h3><code>app/services/listing_import/vw_row.rb</code></h3>
+      <p>Pure Ruby, no DB access. Parses and validates one row and builds the compact Sidekiq payload.</p>
+    </div>
+    <div class="file-actions">
+      <button type="button" data-act="fold" data-id="f-app-services-listing_import-vw_row-rb">Fold all</button>
+      <button type="button" data-act="unfold" data-id="f-app-services-listing_import-vw_row-rb">Unfold all</button>
+      <button type="button" data-act="copy" data-id="f-app-services-listing_import-vw_row-rb">Copy</button>
+    </div>
+  </header>
+  <div class="editor" data-id="f-app-services-listing_import-vw_row-rb"></div>
+</section>
+
+<section class="file" id="f-app-services-listing_import-xlsx_reader-rb">
+  <header class="file-head">
+    <div class="file-meta">
+      <span class="file-role">XLSX reader</span>
+      <h3><code>app/services/listing_import/xlsx_reader.rb</code></h3>
+      <p>Streams the first worksheet with rubyzip + Nokogiri SAX. No extra gem needed.</p>
+    </div>
+    <div class="file-actions">
+      <button type="button" data-act="fold" data-id="f-app-services-listing_import-xlsx_reader-rb">Fold all</button>
+      <button type="button" data-act="unfold" data-id="f-app-services-listing_import-xlsx_reader-rb">Unfold all</button>
+      <button type="button" data-act="copy" data-id="f-app-services-listing_import-xlsx_reader-rb">Copy</button>
+    </div>
+  </header>
+  <div class="editor" data-id="f-app-services-listing_import-xlsx_reader-rb"></div>
+</section>
+
+<section class="file" id="f-app-workers-vw_listing_import_worker-rb">
+  <header class="file-head">
+    <div class="file-meta">
+      <span class="file-role">Import worker</span>
+      <h3><code>app/workers/vw_listing_import_worker.rb</code></h3>
+      <p>Queue <code>listing_import</code>. Resolves users, brands, models and cities, bulk-inserts listings and phone numbers, then schedules image downloads. Logs to <code>log/vw_import.log</code>.</p>
+    </div>
+    <div class="file-actions">
+      <button type="button" data-act="fold" data-id="f-app-workers-vw_listing_import_worker-rb">Fold all</button>
+      <button type="button" data-act="unfold" data-id="f-app-workers-vw_listing_import_worker-rb">Unfold all</button>
+      <button type="button" data-act="copy" data-id="f-app-workers-vw_listing_import_worker-rb">Copy</button>
+    </div>
+  </header>
+  <div class="editor" data-id="f-app-workers-vw_listing_import_worker-rb"></div>
+</section>
+
+<section class="file" id="f-app-workers-listing_image_worker-rb">
+  <header class="file-head">
+    <div class="file-meta">
+      <span class="file-role">Image worker</span>
+      <h3><code>app/workers/listing_image_worker.rb</code></h3>
+      <p>Queue <code>images</code>. Downloads each image URL into a <code>Picture</code>. Failures go to <code>0carpla_image-upload-err.log</code>.</p>
+    </div>
+    <div class="file-actions">
+      <button type="button" data-act="fold" data-id="f-app-workers-listing_image_worker-rb">Fold all</button>
+      <button type="button" data-act="unfold" data-id="f-app-workers-listing_image_worker-rb">Unfold all</button>
+      <button type="button" data-act="copy" data-id="f-app-workers-listing_image_worker-rb">Copy</button>
+    </div>
+  </header>
+  <div class="editor" data-id="f-app-workers-listing_image_worker-rb"></div>
+</section>
+
+<section class="file" id="f-db-migrate-20261016090000_add_index_to_listings_source-rb">
+  <header class="file-head">
+    <div class="file-meta">
+      <span class="file-role">Migration</span>
+      <h3><code>db/migrate/20261016090000_add_index_to_listings_source.rb</code></h3>
+      <p>Index on <code>listings.source</code>, built concurrently. Every batch looks up already-imported rows by source.</p>
+    </div>
+    <div class="file-actions">
+      <button type="button" data-act="fold" data-id="f-db-migrate-20261016090000_add_index_to_listings_source-rb">Fold all</button>
+      <button type="button" data-act="unfold" data-id="f-db-migrate-20261016090000_add_index_to_listings_source-rb">Unfold all</button>
+      <button type="button" data-act="copy" data-id="f-db-migrate-20261016090000_add_index_to_listings_source-rb">Copy</button>
+    </div>
+  </header>
+  <div class="editor" data-id="f-db-migrate-20261016090000_add_index_to_listings_source-rb"></div>
+</section>
+
+<section class="file" id="f-config-deploy-rb">
+  <header class="file-head">
+    <div class="file-meta">
+      <span class="file-role">Deploy change (excerpt)</span>
+      <h3><code>config/deploy.rb</code></h3>
+      <p>Not the whole file. Only the Sidekiq queue flags the import needs.</p>
+    </div>
+    <div class="file-actions">
+      <button type="button" data-act="fold" data-id="f-config-deploy-rb">Fold all</button>
+      <button type="button" data-act="unfold" data-id="f-config-deploy-rb">Unfold all</button>
+      <button type="button" data-act="copy" data-id="f-config-deploy-rb">Copy</button>
+    </div>
+  </header>
+  <div class="editor" data-id="f-config-deploy-rb"></div>
+</section>
+
+<section class="file" id="f-scripts-update_brands_and_models-rb">
+  <header class="file-head">
+    <div class="file-meta">
+      <span class="file-role">Catalogue prep (optional)</span>
+      <h3><code>scripts/update_brands_and_models.rb</code></h3>
+      <p>Creates missing brands and models before an import. Dry run by default.</p>
+    </div>
+    <div class="file-actions">
+      <button type="button" data-act="fold" data-id="f-scripts-update_brands_and_models-rb">Fold all</button>
+      <button type="button" data-act="unfold" data-id="f-scripts-update_brands_and_models-rb">Unfold all</button>
+      <button type="button" data-act="copy" data-id="f-scripts-update_brands_and_models-rb">Copy</button>
+    </div>
+  </header>
+  <div class="editor" data-id="f-scripts-update_brands_and_models-rb"></div>
+</section></div>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/ruby/ruby.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/foldcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/foldgutter.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/indent-fold.min.js"></script>
+<script type="application/json" id="payload">[{"id": "f-lib-tasks-batch_upload-rake", "path": "lib/tasks/batch_upload.rake", "code": "namespace :listings do\n  # Usage:\n  #   rake listings:vw_csv_import                      # validate + enqueue\n  #   rake listings:vw_csv_import DRY_RUN=1            # validate only\n  #   FILE=vw-data.csv BATCH_SIZE=200 rake listings:vw_csv_import\n  # Reads .xlsx (default vw-data.xlsx) or UTF-8 .csv\n  desc \"Import vw-data.xlsx/.csv \u2014 rejects go to \u003cfile>_invalid.csv, valid rows to VwListingImportWorker\"\n  task vw_csv_import: :environment do\n    ActiveRecord::Base.logger = nil\n\n    path           = Rails.root.join(ENV['FILE'] || ENV['CSV'] || 'vw-data.xlsx')\n    invalid_path   = path.sub_ext('_invalid.csv')\n    batch_size     = ENV.fetch('BATCH_SIZE', 100).to_i\n    max_queue_size = ENV.fetch('MAX_QUEUE', 20).to_i\n    dry_run        = ENV['DRY_RUN'].present?\n    reader         = vw_row_reader(path)\n    headers        = reader.headers\n    # puts headers, reader\n    # exit\n    # puts batch_size, max_queue_size\n\n    puts \"\\n[#{Time.current}] VW import started#{' (dry run)' if dry_run} \u2014 #{path.basename}\"\n\n    rows_batch = []\n    sources    = {}\n    reasons    = Hash.new(0)\n    counts     = { total: 0, valid: 0, invalid: 0, batches: 0 }\n\n    enqueue = lambda do\n      next if rows_batch.empty?\n\n      unless dry_run\n        wait_for_queue('listing_import', max_queue_size)\n        VwListingImportWorker.perform_async(rows_batch)\n      end\n      counts[:batches] += 1\n      rows_batch = []\n    end\n\n    CSV.open(invalid_path, 'w') do |rejects|\n      rejects \u003c\u003c %w[row_number invalid_reasons] + headers\n      line = 1 # header\n\n      reader.each do |csv|\n        line += 1\n        counts[:total] += 1\n        row    = ListingImport::VwRow.new(csv, line)\n        errors = row.errors.dup\n        errors \u003c\u003c \"duplicate_of_row_#{sources[row.source]}\" if row.valid? && sources[row.source]\n\n        if errors.any?\n          counts[:invalid] += 1\n          errors.each { |e| reasons[e.sub(/_of_row_\\d+\\z/, '')] += 1 }\n          rejects \u003c\u003c [line, errors.join('; ')] + csv.fields\n          next\n        end\n\n        sources[row.source] = line\n        counts[:valid] += 1\n        rows_batch \u003c\u003c row.to_job\n        # puts row.inspect, csv.inspect, row.to_job.inspect\n        # enqueue.call\n        # break\n        enqueue.call if rows_batch.size >= batch_size\n      end\n    end\n    enqueue.call\n\n    puts \"  rows: #{counts[:total]} | valid: #{counts[:valid]} | invalid: #{counts[:invalid]} \u2192 #{invalid_path.basename}\"\n    reasons.sort_by { |_, n| -n }.each { |reason, n| puts \"    #{reason}: #{n}\" }\n    puts \"[#{Time.current}] #{dry_run ? 'Would enqueue' : 'Enqueued'} #{counts[:batches]} batches. \" \\\n         \"Progress: log/vw_import.log\"\n  end\n\n  # Both readers respond to #headers and yield CSV::Row from #each\n  def vw_row_reader(path)\n    abort \"#{path} not found\" unless File.exist?(path)\n    return ListingImport::XlsxReader.new(path) if path.extname.casecmp('.xlsx').zero?\n\n    encoding = vw_csv_encoding(path)\n    Struct.new(:path, :encoding) do\n      def headers\n        CSV.open(path, headers: true, encoding: encoding, &:readline).headers\n      end\n\n      def each(&block)\n        CSV.foreach(path, headers: true, encoding: encoding, &block)\n      end\n    end.new(path, encoding)\n  end\n\n  # Excel re-saves CSVs as Windows-1252, which turns Vietnamese letters into\n  # \"?\" for good \u2014 importing that would create junk cities and titles\n  def vw_csv_encoding(path)\n    return 'bom|utf-8' if File.binread(path).force_encoding('UTF-8').valid_encoding?\n\n    unless ENV['ALLOW_LOSSY_ENCODING'].present?\n      abort \"#{path.basename} is not UTF-8 (likely saved by Excel as Windows-1252); \" \\\n            \"Vietnamese characters are already lost. Re-export it as UTF-8, \" \\\n            \"or run with ALLOW_LOSSY_ENCODING=1 to import it anyway.\"\n    end\n    'Windows-1252:UTF-8'\n  end\n\n  # -------------------------------------------------------------------- #\n  # Backpressure helper \u2014 pauses enqueuing if workers are overwhelmed    #\n  # -------------------------------------------------------------------- #\n  def wait_for_queue(queue_name, max_size, check_interval: 10)\n    loop do\n      current_size = Sidekiq::Queue.new(queue_name).size\n      break if current_size \u003c max_size\n\n      puts \"  Queue size #{current_size} >= #{max_size}, waiting #{check_interval}s...\"\n      sleep check_interval\n    end\n  end\n\n  def log(file, message)\n    file.puts \"[#{Time.current}] #{message}\"\n    file.flush\n  end\nend\n"}, {"id": "f-app-services-listing_import-vw_row-rb", "path": "app/services/listing_import/vw_row.rb", "code": "# =======================================================================\n# app/services/listing_import/vw_row.rb\n#\n# Parses + validates one row of vw-data.csv (chotot.com export).\n# Pure Ruby \u2014 no DB access, so the rake task can reject bad rows before\n# anything is enqueued, and workers only receive compact, clean payloads.\n# =======================================================================\nmodule ListingImport\n  class VwRow\n    SOURCE_PREFIX = 'vw_chotot'.freeze\n    MAX_MILEAGE   = 999_999\n    MAX_DESC      = 5000\n    IMAGE_COLUMNS = %w[image1_url image2_url image3_url image3_url_1].freeze\n\n    # Mobile prefixes: 03x, 052/055/056/058/059, 070/076-079, 08x, 09x\n    VIETNAM_PHONE_REGEX = /\\A\\+84(3[2-9]|5[25689]|7[06-9]|8[0-9]|9[0-9])[0-9]{7}\\z/\n\n    attr_reader :index, :errors\n\n    # row: CSV::Row (header lookups return the first matching column, which\n    # matters here because fuel_type/gearbox appear twice in the export)\n    def initialize(row, index)\n      @row    = row\n      @index  = index\n      @errors = []\n      validate\n    end\n\n    def valid?\n      errors.empty?\n    end\n\n    # Compact, JSON-safe payload for Sidekiq\n    def to_job\n      {\n        'source'      => source,\n        'index'       => index,\n        'title'       => field('title'),\n        'description' => field('body'),\n        'make'        => field('make'),\n        'model'       => field('model'),\n        'year'        => year,\n        'mileage'     => mileage || 0,\n        'seats'       => seats,\n        'price'       => price,\n        # 'city'        => field('area'),\n        'city'        => field('region'),\n        'region'      => field('region'),\n        'seller_name' => field('post_by'),\n        'phone'       => phone,\n        'fuel'        => fuel,\n        'gear_type'   => gear_type,\n        'url'         => url,\n        'images'      => images.join(','),\n      }\n    end\n\n    # Chotot ad id is stable across re-exports, unlike the CSV row index\n    def source\n      ad_id = url[/(\\d+)\\.htm/, 1]\n      ad_id ? \"#{SOURCE_PREFIX}_#{ad_id}\" : \"#{SOURCE_PREFIX}_index_#{index}\"\n    end\n\n    def url\n      field('url')\n    end\n\n    def phone\n      @phone ||= begin\n        raw = field('phone_number').gsub(/[\\s\\-.]/, '')\n        normalized = case raw\n                     when /\\A\\+84/ then raw\n                     when /\\A84/   then \"+#{raw}\"\n                     when /\\A0/    then \"+84#{raw[1..-1]}\"\n                     when /\\A[35789]\\d{8}\\z/ then \"+84#{raw}\" # Excel dropped the leading 0\n                     end\n        normalized if normalized && normalized.match?(VIETNAM_PHONE_REGEX)\n      end\n    end\n\n    def price\n      digits = field('price').gsub(/\\D/, '')\n      digits.empty? ? nil : digits.to_i\n    end\n\n    def year\n      value = field('year')\n      value.match?(/\\A\\d{4}\\z/) ? value.to_i : nil\n    end\n\n    def mileage\n      value = field('mileage').gsub(/\\D/, '')\n      value.empty? ? nil : value.to_i\n    end\n\n    def seats\n      value = field('number_of_seats')\n      value.match?(/\\A\\d{1,2}\\z/) ? value.to_i : nil # \"Contact Seller\" \u2192 nil\n    end\n\n    # Matches Fuel#name_en\n    def fuel\n      value = field('fuel_type').downcase\n      return 'Hybrid'   if value.include?('hybrid')\n      return 'Electric' if value.include?('\u0111i\u1ec7n') || value.include?('electric')\n      return 'Diesel'   if value.include?('d\u1ea7u') || value.include?('diesel')\n      return 'Petrol'   if value.include?('x\u0103ng') || value.include?('petrol')\n      'Other'\n    end\n\n    def gear_type\n      field('gearbox').include?('S\u1ed1 s\u00e0n') ? 1 : 2 # manual : automatic\n    end\n\n    # The last image column is truncated by one or two characters\n    # (\".jp\" / \".j\") in the export, so restore the extension\n    def images\n      @images ||= IMAGE_COLUMNS.map { |col| repair_image_url(field(col)) }\n                               .reject(&:empty?)\n                               .uniq\n    end\n\n    private\n\n    def field(name)\n      @row[name].to_s.strip\n    end\n\n    def repair_image_url(value)\n      return value if value.empty? || value.match?(/\\.(jpe?g|png|webp)\\z/i)\n      return \"#{value}g\"  if value.end_with?('.jp', '.pn')\n      return \"#{value}pg\" if value.end_with?('.j')\n      value\n    end\n\n    def validate\n      errors \u003c\u003c 'missing_title'        if field('title').empty?\n      errors \u003c\u003c 'missing_make'         if field('make').empty?\n      errors \u003c\u003c 'missing_model'        if field('model').empty?\n      errors \u003c\u003c 'invalid_year'         unless year && year.between?(1900, Time.now.year)\n      errors \u003c\u003c 'missing_price'        unless price && price > 0\n      errors \u003c\u003c 'invalid_mileage'      if mileage && mileage > MAX_MILEAGE\n      errors \u003c\u003c 'missing_city'         if field('area').empty? && field('region').empty?\n      errors \u003c\u003c 'invalid_phone_no'     if phone.nil?\n      errors \u003c\u003c 'no_images'            if images.empty?\n      errors \u003c\u003c 'description_too_long' if field('body').length > MAX_DESC\n      errors \u003c\u003c 'missing_url'          if url.empty?\n    end\n  end\nend\n"}, {"id": "f-app-services-listing_import-xlsx_reader-rb", "path": "app/services/listing_import/xlsx_reader.rb", "code": "# =======================================================================\n# app/services/listing_import/xlsx_reader.rb\n#\n# Minimal streaming reader for the first worksheet of an .xlsx file,\n# built on rubyzip + Nokogiri SAX (both already bundled), so no extra gem.\n# Yields CSV::Row objects keyed by the header row, same as CSV.foreach,\n# which keeps ListingImport::VwRow working for both file types.\n#\n#   ListingImport::XlsxReader.new('vw-data.xlsx').each { |row| row['title'] }\n# =======================================================================\nrequire 'zip'\n\nmodule ListingImport\n  class XlsxReader\n    include Enumerable\n\n    def initialize(path)\n      @path = path.to_s\n    end\n\n    def headers\n      @headers ||= begin\n        first = nil\n        each_raw_row { |cells| first = cells; break }\n        (first || []).map(&:to_s)\n      end\n    end\n\n    def each\n      return enum_for(:each) unless block_given?\n\n      header = nil\n      each_raw_row do |cells|\n        if header.nil?\n          header = cells.map(&:to_s)\n          next\n        end\n        next if cells.all? { |v| v.to_s.strip.empty? }\n\n        fields = Array.new(header.size) { |i| cells[i] }\n        yield CSV::Row.new(header, fields)\n      end\n    end\n\n    private\n\n    def each_raw_row(&block)\n      Zip::File.open(@path) do |zip|\n        strings = shared_strings(zip)\n        Nokogiri::XML::SAX::Parser.new(SheetHandler.new(strings, &block))\n                                  .parse(zip.read(first_sheet_path(zip)))\n      end\n    end\n\n    # xl/workbook.xml \u2192 first \u003csheet r:id> \u2192 xl/_rels/workbook.xml.rels target\n    def first_sheet_path(zip)\n      workbook = Nokogiri::XML(zip.read('xl/workbook.xml'))\n      rel_id   = workbook.at_xpath('//*[local-name()=\"sheet\"]')\n                         .attribute_with_ns('id', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships')\n                         .value\n      rels     = Nokogiri::XML(zip.read('xl/_rels/workbook.xml.rels'))\n      target   = rels.at_xpath(%(//*[local-name()=\"Relationship\"][@Id=\"#{rel_id}\"]))['Target']\n      target.start_with?('/') ? target[1..-1] : \"xl/#{target}\"\n    end\n\n    def shared_strings(zip)\n      return [] unless zip.find_entry('xl/sharedStrings.xml')\n\n      handler = SharedStringsHandler.new\n      Nokogiri::XML::SAX::Parser.new(handler).parse(zip.read('xl/sharedStrings.xml'))\n      handler.strings\n    end\n\n    # \u003csi>\u003ct>text\u003c/t>\u003c/si> or rich text \u003csi>\u003cr>\u003ct>a\u003c/t>\u003c/r>\u003cr>\u003ct>b\u003c/t>\u003c/r>\u003c/si>;\n    # phonetic hints (\u003crPh>) are skipped\n    class SharedStringsHandler \u003c Nokogiri::XML::SAX::Document\n      attr_reader :strings\n\n      def initialize\n        @strings = []\n      end\n\n      def start_element(name, _attrs = [])\n        case name\n        when 'si'  then @buffer = +''\n        when 'rPh' then @phonetic = true\n        when 't'   then @in_text = !@phonetic\n        end\n      end\n\n      def end_element(name)\n        case name\n        when 'si'  then @strings \u003c\u003c @buffer\n        when 'rPh' then @phonetic = false\n        when 't'   then @in_text = false\n        end\n      end\n\n      def characters(text)\n        @buffer \u003c\u003c text if @in_text\n      end\n      alias cdata_block characters\n    end\n\n    # Streams \u003crow>\u003cc r=\"B2\" t=\"s\">\u003cv>12\u003c/v>\u003c/c>\u003c/row> into arrays of values\n    class SheetHandler \u003c Nokogiri::XML::SAX::Document\n      def initialize(strings, &block)\n        @strings = strings\n        @block   = block\n      end\n\n      def start_element(name, attrs = [])\n        case name\n        when 'row'\n          @cells = []\n        when 'c'\n          attrs     = Hash[attrs]\n          @col      = column_index(attrs['r']) || @cells.size\n          @type     = attrs['t']\n          @value    = +''\n        when 'v', 't'\n          @in_value = true\n        end\n      end\n\n      def end_element(name)\n        case name\n        when 'v', 't' then @in_value = false\n        when 'c'      then @cells[@col] = cell_value\n        when 'row'    then @block.call(@cells)\n        end\n      end\n\n      def characters(text)\n        @value \u003c\u003c text if @in_value\n      end\n      alias cdata_block characters\n\n      private\n\n      def cell_value\n        case @type\n        when 's' then @strings[@value.to_i]\n        when 'b' then @value == '1' ? 'TRUE' : 'FALSE'\n        else @value.sub(/\\.0+\\z/, '') # whole numbers are stored as \"2022\" or \"2022.0\"\n        end\n      end\n\n      # \"A1\" \u2192 0, \"Z9\" \u2192 25, \"AA3\" \u2192 26\n      def column_index(ref)\n        letters = ref.to_s[/\\A[A-Z]+/]\n        return unless letters\n\n        letters.each_char.inject(0) { |sum, ch| sum * 26 + (ch.ord - 64) } - 1\n      end\n    end\n  end\nend\n"}, {"id": "f-app-workers-vw_listing_import_worker-rb", "path": "app/workers/vw_listing_import_worker.rb", "code": "# =======================================================================\n# app/workers/vw_listing_import_worker.rb\n#\n# Imports a batch of vw-data.csv rows that ListingImport::VwRow already\n# validated and normalised (see `rake listings:vw_csv_import`).\n#\n# Per batch: 1 SELECT for already-imported sources, a handful of set-based\n# lookups (users, brands, models, cities), then listings (fuel via listings.fuel_id)\n# and phone numbers are inserted in 1 statement each inside one transaction.\n# =======================================================================\nclass VwListingImportWorker\n  include Sidekiq::Worker\n\n  sidekiq_options(\n    queue:     'listing_import',\n    retry:     3,\n    backtrace: 10,\n    dead:      true\n  )\n\n  sidekiq_retries_exhausted do |_job, exception|\n    Rails.logger.error(\"VwListingImportWorker permanently failed | error: #{exception.message}\")\n  end\n\n  # Serialises lookup creation across concurrent workers, so two batches\n  # never create the same user / brand / model / city twice\n  LOOKUP_LOCK_KEY = 20_261_016\n  IMAGE_DELAY     = 30..120 # seconds \u2014 staggers image downloads\n  LOGGER          = Logger.new(Rails.root.join('log', 'vw_import.log'))\n\n  LISTING_COLUMNS = %i[\n    type title condition gear_type year wheel mileage description\n    climatisation seller_type engine_capacity price source car_type\n    fuel_id model_id body_id seller_id city_id seating_capacity\n    origin_url validated validated_at created_at updated_at\n  ].freeze\n\n  def perform(rows)\n    ActiveRecord::Base.logger = nil\n\n    # ---- Idempotency \u2014 retries and re-runs skip imported rows ---------- #\n    existing = VehicleListing.where(source: rows.map { |r| r['source'] }).pluck(:source).to_set\n    rows     = rows.uniq { |r| r['source'] }.reject { |r| existing.include?(r['source']) }\n    log(\"Skipped #{existing.size} already imported\") if existing.any?\n    return if rows.empty?\n\n    lookups = resolve_lookups(rows)\n    now     = Time.current\n    records = rows.map { |r| build_listing(r, lookups, now) }.compact\n    return if records.empty?\n\n    source_to_id = VehicleListing.transaction do\n      ids = insert_listings(records)\n      insert_phone_numbers(rows, ids, now)\n      ids\n    end\n\n    rows.each do |r|\n      listing_id = source_to_id[r['source']]\n      next unless listing_id\n\n      ListingImageWorker.perform_in(rand(IMAGE_DELAY).seconds, listing_id, r['index'], r['images'])\n    end\n\n    log(\"Imported #{source_to_id.size}/#{rows.size} | rows #{rows.first['index']}..#{rows.last['index']}\")\n  ensure\n    ActiveRecord::Base.connection_pool.release_connection\n  end\n\n  private\n\n  # -------------------------------------------------------------------- #\n  # Lookups \u2014 find in bulk, create only what is missing                  #\n  # -------------------------------------------------------------------- #\n  def resolve_lookups(rows)\n    ActiveRecord::Base.transaction do\n      ActiveRecord::Base.connection.execute(\"SELECT pg_advisory_xact_lock(#{LOOKUP_LOCK_KEY})\")\n\n      brands = resolve_brands(rows)\n      {\n        users:   resolve_users(rows),\n        brands:  brands,\n        models:  resolve_models(rows, brands),\n        cities:  resolve_cities(rows),\n        fuels:   Fuel.joins(:translations)\n                     .where(fuel_translations: { locale: 'en' })\n                     .pluck('fuel_translations.name', 'fuels.id').to_h,\n        body_id: others_body_type_id,\n      }\n    end\n  end\n\n  def resolve_users(rows)\n    names = {}\n    rows.each { |r| names[r['phone']] ||= r['seller_name'] }\n\n    users = first_ids(User.where(phone: names.keys).order(:id).pluck(:phone, :id))\n    (names.keys - users.keys).each do |phone|\n      users[phone] = create_lookup(User, name: names[phone].presence || phone,\n                                         phone: phone, password: SecureRandom.hex(5))\n    end\n    users\n  end\n\n  # Brand names differ only by case in the catalogue, so match\n  # case-insensitively and never create a case variant\n  def resolve_brands(rows)\n    wanted = rows.map { |r| r['make'] }.uniq(&:downcase)\n\n    # Skip motorbike brands (Honda, Suzuki\u2026) and prefer car_type car\n    brands = first_ids(Brand.where.not(car_type: :moto)\n                            .where('LOWER(name) IN (?)', wanted.map(&:downcase))\n                            .order(\"CASE WHEN car_type = #{Brand.car_types[:car]} THEN 0 ELSE 1 END, id\")\n                            .pluck('LOWER(name)', :id))\n    wanted.each do |name|\n      brands[name.downcase] ||= create_lookup(Brand, name: name, car_type: :car)\n    end\n    brands\n  end\n\n  # Keyed by [brand_id, downcased model name]\n  def resolve_models(rows, brands)\n    wanted = rows.map { |r| [brands[r['make'].downcase], r['model']] }\n                 .select(&:first)\n                 .uniq { |brand_id, name| [brand_id, name.downcase] }\n    return {} if wanted.empty?\n\n    models = first_ids(Model.where(brand_id: wanted.map(&:first).uniq)\n                            .where('LOWER(name) IN (?)', wanted.map { |_, n| n.downcase }.uniq)\n                            .order(:id).pluck(:brand_id, 'LOWER(name)', :id)\n                            .map { |brand_id, name, id| [[brand_id, name], id] })\n    wanted.each do |brand_id, name|\n      models[[brand_id, name.downcase]] ||= create_lookup(Model, name: name, brand_id: brand_id)\n    end\n    models\n  end\n\n  # Keyed by [city name, region name] (Vietnamese translations)\n  def resolve_cities(rows)\n    wanted = rows.map { |r| city_key(r) }.uniq\n\n    cities = first_ids(City.joins(:translations, region: :translations)\n                           .where(city_translations:   { locale: 'vi', name: wanted.map(&:first).uniq })\n                           .where(region_translations: { locale: 'vi', name: wanted.map(&:last).uniq })\n                           .order('cities.id')\n                           .pluck('city_translations.name', 'region_translations.name', 'cities.id')\n                           .map { |city, region, id| [[city, region], id] })\n\n    missing = wanted - cities.keys\n    return cities if missing.empty?\n\n    regions = first_ids(Region.joins(:translations)\n                              .where(region_translations: { locale: 'vi', name: missing.map(&:last).uniq })\n                              .order('regions.id')\n                              .pluck('region_translations.name', 'regions.id'))\n    missing.each do |city, region|\n      regions[region] = create_lookup(Region, translated_names(Region, region)) unless regions.key?(region)\n      next unless regions[region]\n\n      cities[[city, region]] = create_lookup(City, translated_names(City, city).merge(region_id: regions[region]))\n    end\n    cities\n  end\n\n  def others_body_type_id\n    BodyType.joins(:translations)\n            .where(body_type_translations: { name: 'Others' })\n            .order('body_types.id').pluck('body_types.id').first ||\n      create_lookup(BodyType, translated_names(BodyType, 'Others'))\n  end\n\n  # Same name for every locale (name_en, name_vi, \u2026) \u2014 all are required\n  def translated_names(klass, name)\n    klass.globalize_attribute_names.each_with_object({}) { |attr, h| h[attr] = name }\n  end\n\n  # Missing district falls back to the province and vice versa\n  def city_key(row)\n    city   = row['city'].presence || row['region']\n    region = row['region'].presence || row['city']\n    [city, region]\n  end\n\n  # [[key, id], ...] ordered by id \u2192 { key => lowest id }\n  def first_ids(pairs)\n    pairs.each_with_object({}) { |(key, id), h| h[key] ||= id }\n  end\n\n  def create_lookup(klass, attrs)\n    klass.create!(attrs).id\n  rescue ActiveRecord::RecordInvalid => e\n    log(\"Could not create #{klass.name} #{attrs.except(:password).inspect}: #{e.message}\")\n    nil\n  end\n\n  # -------------------------------------------------------------------- #\n  # Listing rows                                                         #\n  # -------------------------------------------------------------------- #\n  def build_listing(row, lookups, now)\n    brand_id = lookups[:brands][row['make'].downcase]\n    ids = {\n      seller_id: lookups[:users][row['phone']],\n      model_id:  lookups[:models][[brand_id, row['model'].downcase]],\n      city_id:   lookups[:cities][city_key(row)],\n    }\n    if (missing = ids.select { |_, v| v.nil? }.keys).any?\n      log(\"Row #{row['index']} skipped \u2014 no #{missing.join(', ')} | #{row['title']}\")\n      return\n    end\n\n    ids.merge(\n      type:             'VehicleListing',\n      title:            row['title'],\n      condition:        2, # used_listing\n      gear_type:        row['gear_type'],\n      year:             row['year'],\n      wheel:            1, # right\n      mileage:          row['mileage'],\n      description:      row['description'],\n      climatisation:    false,\n      seller_type:      'User',\n      engine_capacity:  '',\n      price:            row['price'],\n      source:           row['source'],\n      car_type:         1, # car\n      fuel_id:          lookups[:fuels][row['fuel']] || lookups[:fuels]['Other'],\n      body_id:          lookups[:body_id],\n      seating_capacity: row['seats'],\n      origin_url:       row['url'],\n      validated:        true,\n      validated_at:     now,\n      created_at:       now,\n      updated_at:       now\n    )\n  end\n\n  # -------------------------------------------------------------------- #\n  # Bulk inserts                                                         #\n  # -------------------------------------------------------------------- #\n\n  # 1 INSERT for the batch \u2192 { source => id }. If it fails, retry row by\n  # row in savepoints so one bad row doesn't drop the other 99\n  def insert_listings(records)\n    VehicleListing.transaction(requires_new: true) { insert_listing_rows(records) }\n  rescue ActiveRecord::StatementInvalid => e\n    log(\"Bulk insert failed, retrying row by row: #{e.message.lines.first}\")\n    records.each_with_object({}) do |record, ids|\n      begin\n        ids.merge!(VehicleListing.transaction(requires_new: true) { insert_listing_rows([record]) })\n      rescue ActiveRecord::StatementInvalid => row_error\n        log(\"Insert failed for #{record[:source]}: #{row_error.message.lines.first}\")\n      end\n    end\n  end\n\n  def insert_listing_rows(records)\n    conn   = ActiveRecord::Base.connection\n    values = records.map { |r| \"(#{LISTING_COLUMNS.map { |c| conn.quote(r[c]) }.join(', ')})\" }\n\n    conn.execute(\u003c\u003c~SQL).each_with_object({}) { |row, h| h[row['source']] = row['id'] }\n      INSERT INTO listings (#{LISTING_COLUMNS.join(', ')})\n      VALUES #{values.join(\",\\n\")}\n      RETURNING id, source\n    SQL\n  end\n\n  def insert_phone_numbers(rows, source_to_id, now)\n    conn   = ActiveRecord::Base.connection\n    values = rows.map do |r|\n      listing_id = source_to_id[r['source']]\n      next unless listing_id\n\n      \"(#{[r['phone'], listing_id, 'Listing', now, now].map { |v| conn.quote(v) }.join(', ')})\"\n    end.compact\n    return if values.empty?\n\n    conn.execute(\u003c\u003c~SQL)\n      INSERT INTO phone_numbers (phone, phoneable_id, phoneable_type, created_at, updated_at)\n      VALUES #{values.join(\",\\n\")}\n    SQL\n  end\n\n  def log(message)\n    LOGGER.info(\"[#{jid}] #{message}\")\n  end\nend\n"}, {"id": "f-app-workers-listing_image_worker-rb", "path": "app/workers/listing_image_worker.rb", "code": "# app/workers/listing_image_worker.rb\n\nrequire 'open-uri'\n\nclass ListingImageWorker\n  include Sidekiq::Worker\n\n  sidekiq_options(\n    queue:     :images,        # separate queue \u2014 never blocks listing imports\n    retry:     4,\n    backtrace: true\n  )\n\n  # Timeout for each image HTTP request (seconds)\n  OPEN_TIMEOUT  = 20\n  READ_TIMEOUT  = 40\n\n  def perform(listing_id, index, images_string)\n    listing = VehicleListing.find_by(id: listing_id)\n    return unless listing\n\n    urls = images_string.to_s.split(',').map(&:strip).reject(&:blank?)\n    return if urls.empty?\n\n    urls.each do |url|\n      upload_image(listing, listing_id, index, url)\n    end\n\n  ensure\n    # Return DB connection to pool after all uploads finish\n    ActiveRecord::Base.connection_pool.release_connection\n  end\n\n  private\n\n  def upload_image(listing, listing_id, index, url)\n    URI.open(\n      url,\n      open_timeout: OPEN_TIMEOUT,\n      read_timeout: READ_TIMEOUT\n    ) do |file|\n      Picture.create!(\n        url:         file,\n        picturable:  listing\n      )\n    end\n  rescue StandardError => e\n    log_error(\"Index-#{index} | listing_id: #{listing_id} | URL: #{url} | #{e.class}: #{e.message}\")\n  end\n\n  def log_error(message)\n    File.open('0carpla_image-upload-err.log', 'a+') do |f|\n      f.puts \"[#{Time.current}] #{message}\"\n      f.flush\n    end\n  end\nend"}, {"id": "f-db-migrate-20261016090000_add_index_to_listings_source-rb", "path": "db/migrate/20261016090000_add_index_to_listings_source.rb", "code": "# Batch imports look up already-imported rows by source on every job\nclass AddIndexToListingsSource \u003c ActiveRecord::Migration[5.1]\n  disable_ddl_transaction!\n\n  def change\n    add_index :listings, :source, algorithm: :concurrently\n  end\nend\n"}, {"id": "f-config-deploy-rb", "path": "config/deploy.rb", "code": "# config/deploy.rb \u2014 Sidekiq must also listen on the `images` and\n# `listing_import` queues, otherwise the import jobs sit in Redis forever.\n\n# namespace :sidekiq \u2192 task start (line ~423)\ncommand %(#{fetch(:sidekiq)} -d -e #{fetch(:rails_env)} -c #{fetch(:sidekiq_concurrency)} -q #{fetch(:sidekiq_query)} -q images -q listing_import -P #{fetch(:sidekiq_pid)} -L #{fetch(:sidekiq_log)})\n\n# task :generate_monit_conf \u2192 \"start program\" line (line ~112): same\n# `-q images -q listing_import` added after `-q #{fetch(:sidekiq_query)}`.\n\n# If Sidekiq runs from systemd instead (bin/config_templates/sidekiq.service),\n# add the queues to ExecStart there as well:\n#   ExecStart=... bundle exec sidekiq -e production -q vietwheels -q images -q listing_import -c 3 ...\n"}, {"id": "f-scripts-update_brands_and_models-rb", "path": "scripts/update_brands_and_models.rb", "code": "# frozen_string_literal: true\n\n# Adds brands and models to the catalogue.\n#\n# It only ever creates what is missing - nothing is renamed, merged or deleted -\n# so it is safe to run more than once.\n#\n# Usage on the production console:\n#\n#   load Rails.root.join('scripts/update_brands_and_models.rb').to_s\n#\n#   UpdateBrandsAndModels.call                   # dry run, writes nothing\n#   UpdateBrandsAndModels.call(dry_run: false)   # apply\n#\n# Always read the dry run output first. Brands are matched ignoring case and\n# punctuation, because the catalogue already holds near duplicates (\"BMW\" and\n# \"Bmw\", \"Mercedes\" / \"Mercedes Benz\" / \"Mercedes-benz\"). When more than one\n# brand matches, the script refuses to guess and skips it - pick the id you want\n# from the report and pin it:\n#\n#   UpdateBrandsAndModels.call(dry_run: false, brand_ids: { 'Mercedes-Benz' => 190 })\n#\n# Saving through ActiveRecord is deliberate: Cacheable::Brand / Cacheable::Model\n# flush the home page and filter caches on after_save.\n\nObject.send(:remove_const, :UpdateBrandsAndModels) if defined?(UpdateBrandsAndModels)\n\nmodule UpdateBrandsAndModels\n\n  CATALOGUE = {\n    'Acura'         => ['ZDX'],\n    'BMW'           => ['118i', '325i', '520i', '530i', 'E60', 'X2'],\n    'BYD'           => ['Atto 2', 'Atto 3', 'Dolphin Han', 'M6', 'M9', 'Seal', 'Seal 5',\n                        'Sealion 6', 'Sealion 8'],\n    'Daihatsu'      => ['Terios'],\n    'GAC'           => ['M8'],\n    'Isuzu'         => ['Trooper'],\n    'JAC'           => ['N250ES'],\n    'Mercedes-Benz' => ['313', 'A250 AMG Sport Line', 'C230', 'EQE 500', 'R350', 'Sprinter', 'V250'],\n    'MG'            => ['G50'],\n    'Mitsubishi'    => ['Destinator'],\n    'Nissan'        => ['Qashqai'],\n    'Peugeot'       => ['Traveller'],\n    'RAM'           => ['1500 Limited Longhorn'],\n    'Skoda'         => ['Kushaq', 'Slavia Active'],\n    'Smart'         => ['Fortwo'],\n    'Toyota'        => ['Tacoma'],\n    'VinFast'       => ['EC Van', 'Herio Green', 'Limo Green', 'MVP7', 'Nerio Green',\n                        'President', 'Minio Green'],\n    'Volkswagen'    => ['Golf', 'Passat', 'Teramont', 'Touareg', 'Viloran'],\n    'Wuling'        => ['Bingo']\n  }.freeze\n\n  # Every brand in the catalogue is a car, and Model#set_car_type copies this\n  # onto each model on save.\n  DEFAULT_CAR_TYPE = :car\n\n  class \u003c\u003c self\n\n    def update_brands_models(dry_run: true, brand_ids: {}, car_type: DEFAULT_CAR_TYPE)\n      @stats  = Hash.new(0)\n      @brands = Brand.includes(:models).to_a\n\n      ActiveRecord::Base.transaction do\n        CATALOGUE.each do |brand_name, model_names|\n          process_brand(brand_name, model_names, dry_run, brand_ids, car_type)\n        end\n\n        raise ActiveRecord::Rollback if dry_run\n      end\n\n      report(dry_run)\n      @stats\n    end\n\n    private\n\n    def process_brand(brand_name, model_names, dry_run, brand_ids, car_type)\n      brand, candidates = resolve_brand(brand_name, brand_ids)\n\n      if candidates.size > 1 && brand.nil?\n        puts \"\\n#{brand_name}\"\n        puts \"  ! AMBIGUOUS - #{candidates.size} brands match: #{candidates.map { |b| describe(b) }.join(', ')}\"\n        puts \"    re-run with brand_ids: { #{brand_name.inspect} => \u003cid> } to pick one. Skipped.\"\n        @stats[:brands_ambiguous] += 1\n        @stats[:models_skipped] += model_names.size\n        return\n      end\n\n      if brand\n        puts \"\\n#{brand_name} -> #{describe(brand)}\"\n        @stats[:brands_matched] += 1\n      else\n        puts \"\\n#{brand_name} -> NEW brand (car_type: #{car_type})\"\n        @stats[:brands_created] += 1\n        brand = Brand.create!(name: brand_name, car_type: car_type) unless dry_run\n      end\n\n      model_names.each { |name| process_model(brand, name, dry_run) }\n    end\n\n    def process_model(brand, model_name, dry_run)\n      # `brand` is nil in a dry run for a brand that does not exist yet, so every\n      # one of its models is necessarily new.\n      existing = brand && brand.models.detect { |m| normalize(m.name) == normalize(model_name) }\n\n      if existing\n        puts \"  = #{model_name.ljust(24)} already exists as #{existing.name.inspect} (##{existing.id})\"\n        @stats[:models_present] += 1\n        return\n      end\n\n      puts \"  + #{model_name.ljust(24)}#{elsewhere_note(brand, model_name)}\"\n      @stats[:models_created] += 1\n      brand.models.create!(name: model_name) unless dry_run\n    end\n\n    # Flags a model that already lives under a near duplicate of this brand, so\n    # a split catalogue is visible in the report rather than silently widened.\n    def elsewhere_note(brand, model_name)\n      return '' if brand.nil?\n\n      siblings = @brands.select { |b| b.id != brand.id && normalize(b.name) == normalize(brand.name) }\n      owner    = siblings.detect { |b| b.models.any? { |m| normalize(m.name) == normalize(model_name) } }\n      return '' if owner.nil?\n\n      \"  (note: already under #{describe(owner)})\"\n    end\n\n    def resolve_brand(brand_name, brand_ids)\n      pinned = brand_ids[brand_name] || brand_ids[brand_name.to_sym]\n      return [Brand.find(pinned), []] if pinned\n\n      candidates = @brands.select { |b| normalize(b.name) == normalize(brand_name) }\n                          .sort_by { |b| -b.models.size }\n\n      [candidates.size == 1 ? candidates.first : nil, candidates]\n    end\n\n    def normalize(name)\n      name.to_s.downcase.gsub(/[^a-z0-9]/, '')\n    end\n\n    def describe(brand)\n      \"##{brand.id} #{brand.name.inspect} (#{brand.models.size} models)\"\n    end\n\n    def report(dry_run)\n      puts \"\\n\" + ('-' * 72)\n      puts dry_run ? 'DRY RUN - nothing was written. Re-run with dry_run: false to apply.' : 'APPLIED.'\n      puts format('  brands: %d created, %d matched, %d ambiguous (skipped)',\n                  @stats[:brands_created], @stats[:brands_matched], @stats[:brands_ambiguous])\n      puts format('  models: %d created, %d already present, %d skipped',\n                  @stats[:models_created], @stats[:models_present], @stats[:models_skipped])\n      puts '-' * 72\n    end\n\n  end\n\nend\n\nUpdateBrandsAndModels.call\n\n\ndef find_or_create_brand name\n  brand = Brand.where(name: name).first\n  if brand.nil?\n    brand = Brand.create! name: name, car_type: :car\n    puts \"New brand created : #{name}\"\n  end\n  brand.id\nend\n\n\ndef add_model model_name, brand_id\n  puts \"#{model_name}, #{brand_id}\"\n  model = Model.where(name: model_name, brand_id: brand_id).first\n  if model.nil?\n    model = Model.create! name: model_name, brand_id: brand_id, car_type: :car\n    puts \"New model created: #{model_name}\"\n  end\nend\n\ndef update_brands_models data\n  data.each do |brand, models|\n    puts \"* \" * 30, brand\n    models.each {|model| add_model model, find_or_create_brand(brand) } \n    puts \"- \" * 30\n  end\nend"}]</script>
+<script>
+(function () {
+  var files = JSON.parse(document.getElementById('payload').textContent);
+  var editors = {};
+
+  var toc = document.getElementById('toc-files');
+  files.forEach(function (f) {
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = '#' + f.id;
+    a.innerHTML = '<code></code>';
+    a.firstChild.textContent = f.path.split('/').pop();
+    li.appendChild(a);
+    toc.appendChild(li);
+  });
+
+  function copyText(text, btn) {
+    function done(label) { var old = btn.dataset.label || btn.textContent; btn.dataset.label = old; btn.textContent = label; setTimeout(function () { btn.textContent = old; }, 1400); }
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      var ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      done(ok ? 'Copied' : 'Select and copy');
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () { done('Copied'); }, fallback);
+    } catch (e) { fallback(); }
+  }
+
+  // Folds every block except containers that span most of the file
+  // (module / class / namespace), so the method list stays readable.
+  function foldAll(cm) {
+    var total = cm.lineCount();
+    cm.operation(function () {
+      for (var i = total - 1; i >= 0; i--) {
+        var range = CodeMirror.fold.indent(cm, CodeMirror.Pos(i, 0));
+        if (!range) continue;
+        if (range.to.line - range.from.line > total * 0.5) continue;
+        cm.foldCode(CodeMirror.Pos(i, 0), { rangeFinder: CodeMirror.fold.indent, scanUp: false }, 'fold');
+      }
+    });
+  }
+
+  function unfoldAll(cm) {
+    cm.operation(function () {
+      cm.execCommand('unfoldAll');
+    });
+  }
+
+  function boot() {
+    if (!window.CodeMirror) {
+      document.querySelectorAll('.editor').forEach(function (el) {
+        var f = files.find(function (x) { return x.id === el.dataset.id; });
+        var pre = document.createElement('pre');
+        pre.style.cssText = 'margin:0;padding:12px 14px;overflow:auto;max-height:70vh;font:13px/1.55 var(--font-mono);background:var(--code-bg)';
+        pre.textContent = f.code;
+        el.appendChild(pre);
+      });
+      return;
+    }
+    files.forEach(function (f) {
+      var el = document.querySelector('.editor[data-id="' + f.id + '"]');
+      editors[f.id] = CodeMirror(el, {
+        value: f.code.replace(/\n$/, ''),
+        mode: 'ruby',
+        theme: 'vw',
+        readOnly: true,
+        lineNumbers: true,
+        lineWrapping: false,
+        foldGutter: true,
+        foldOptions: { rangeFinder: CodeMirror.fold.indent, widget: '↔' },
+        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        viewportMargin: 50
+      });
+    });
+  }
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    if (btn.classList.contains('copy-cmd')) {
+      var pre = btn.parentNode.querySelector('pre');
+      copyText(pre.textContent, btn);
+      return;
+    }
+    var id = btn.dataset.id, act = btn.dataset.act;
+    if (!act) return;
+    var f = files.find(function (x) { return x.id === id; });
+    var cm = editors[id];
+    if (act === 'copy') copyText(f.code, btn);
+    else if (cm && act === 'fold') foldAll(cm);
+    else if (cm && act === 'unfold') unfoldAll(cm);
+  });
+
+  boot();
+})();
+</script>
+
+</body></html>
